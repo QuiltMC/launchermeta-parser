@@ -15,7 +15,7 @@
  */
 package org.quiltmc.launchermeta.version.v1;
 
-public class AssetIndex extends Download.IdDownload {
+public class AssetIndex extends DownloadableFile.IdDownload {
     private final int totalSize;
 
     public AssetIndex(String sha1, int size, String url, String id, int totalSize) {

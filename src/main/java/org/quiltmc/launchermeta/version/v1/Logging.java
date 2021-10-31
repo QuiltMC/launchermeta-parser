@@ -39,9 +39,9 @@ public class Logging {
     public static class LoggingInstance {
         private final String argument;
         private final String type;
-        private final Download.IdDownload file;
+        private final DownloadableFile.IdDownload file;
 
-        public LoggingInstance(String argument, String type, Download.IdDownload file) {
+        public LoggingInstance(String argument, String type, DownloadableFile.IdDownload file) {
             this.argument = argument;
             this.type = type;
             this.file = file;
@@ -55,7 +55,7 @@ public class Logging {
             return type;
         }
 
-        public Download.IdDownload getFile() {
+        public DownloadableFile.IdDownload getFile() {
             return file;
         }
 

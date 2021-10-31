@@ -22,36 +22,36 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
 
 public class Downloads {
-    private final Download client;
+    private final DownloadableFile client;
     @SerializedName("client_mappings")
     @Nullable
-    private final Download clientMappings;
+    private final DownloadableFile clientMappings;
     @Nullable
-    private final Download server;
+    private final DownloadableFile server;
     @SerializedName("server_mappings")
     @Nullable
-    private final Download serverMappings;
+    private final DownloadableFile serverMappings;
 
-    public Downloads(Download client, @Nullable Download clientMappings, @Nullable Download server, @Nullable Download serverMappings) {
+    public Downloads(DownloadableFile client, @Nullable DownloadableFile clientMappings, @Nullable DownloadableFile server, @Nullable DownloadableFile serverMappings) {
         this.client = client;
         this.clientMappings = clientMappings;
         this.server = server;
         this.serverMappings = serverMappings;
     }
 
-    public Download getClient() {
+    public DownloadableFile getClient() {
         return client;
     }
 
-    public Optional<Download> getClientMappings() {
+    public Optional<DownloadableFile> getClientMappings() {
         return Optional.ofNullable(clientMappings);
     }
 
-    public Optional<Download> getServer() {
+    public Optional<DownloadableFile> getServer() {
         return Optional.ofNullable(server);
     }
 
-    public Optional<Download> getServerMappings() {
+    public Optional<DownloadableFile> getServerMappings() {
         return Optional.ofNullable(serverMappings);
     }
 

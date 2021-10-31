@@ -11,5 +11,6 @@ jobs:
       options: --user root
     steps:
       - uses: actions/checkout@v1
-      - uses: gradle/wrapper-validation-action@v1
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
       - run: ./gradlew build test publishToMavenLocal --stacktrace

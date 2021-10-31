@@ -17,12 +17,12 @@ package org.quiltmc.launchermeta.version.v1;
 
 import java.util.Objects;
 
-public class Download {
+public class DownloadableFile {
     private final String sha1;
     private final int size;
     private final String url;
 
-    public Download(String sha1, int size, String url) {
+    public DownloadableFile(String sha1, int size, String url) {
         this.sha1 = sha1;
         this.size = size;
         this.url = url;
@@ -44,11 +44,11 @@ public class Download {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Download download = (Download) o;
+        DownloadableFile download = (DownloadableFile) o;
         return size == download.size && Objects.equals(sha1, download.sha1) && Objects.equals(url, download.url);
     }
 
-    public static class PathDownload extends Download {
+    public static class PathDownload extends DownloadableFile {
         private final String path;
 
         public PathDownload(String sha1, int size, String url, String path) {
@@ -70,7 +70,7 @@ public class Download {
         }
     }
 
-    public static class IdDownload extends Download {
+    public static class IdDownload extends DownloadableFile {
         private final String id;
 
         public IdDownload(String sha1, int size, String url, String id) {

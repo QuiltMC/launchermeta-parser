@@ -70,28 +70,28 @@ public class Library {
 
     public static class Classifiers {
         @Nullable
-        private final Download.PathDownload javadoc;
+        private final DownloadableFile.PathDownload javadoc;
 
         @SerializedName("natives-linux")
         @Nullable
-        private final Download.PathDownload nativesLinux;
+        private final DownloadableFile.PathDownload nativesLinux;
 
         @SerializedName("natives-macos")
         @Nullable
-        private final Download.PathDownload nativesMacOS;
+        private final DownloadableFile.PathDownload nativesMacOS;
 
         @SerializedName("natives-osx")
         @Nullable
-        private final Download.PathDownload nativesOSX;
+        private final DownloadableFile.PathDownload nativesOSX;
 
         @SerializedName("natives-windows")
         @Nullable
-        private final Download.PathDownload nativesWindows;
+        private final DownloadableFile.PathDownload nativesWindows;
 
         @Nullable
-        private final Download.PathDownload sources;
+        private final DownloadableFile.PathDownload sources;
 
-        public Classifiers(@Nullable Download.PathDownload javadoc, @Nullable Download.PathDownload nativesLinux, @Nullable Download.PathDownload nativesMacOS, Download.@Nullable PathDownload nativesOSX, @Nullable Download.PathDownload nativesWindows, @Nullable Download.PathDownload sources) {
+        public Classifiers(@Nullable DownloadableFile.PathDownload javadoc, @Nullable DownloadableFile.PathDownload nativesLinux, @Nullable DownloadableFile.PathDownload nativesMacOS, DownloadableFile.@Nullable PathDownload nativesOSX, @Nullable DownloadableFile.PathDownload nativesWindows, @Nullable DownloadableFile.PathDownload sources) {
             this.javadoc = javadoc;
             this.nativesLinux = nativesLinux;
             this.nativesMacOS = nativesMacOS;
@@ -100,27 +100,27 @@ public class Library {
             this.sources = sources;
         }
 
-        public Optional<Download.PathDownload> getJavadoc() {
+        public Optional<DownloadableFile.PathDownload> getJavadoc() {
             return Optional.ofNullable(javadoc);
         }
 
-        public Optional<Download.PathDownload> getNativesLinux() {
+        public Optional<DownloadableFile.PathDownload> getNativesLinux() {
             return Optional.ofNullable(nativesLinux);
         }
 
-        public Optional<Download.PathDownload> getNativesMacOS() {
+        public Optional<DownloadableFile.PathDownload> getNativesMacOS() {
             return Optional.ofNullable(nativesMacOS);
         }
 
-        public Optional<Download.PathDownload> getNativesOSX() {
+        public Optional<DownloadableFile.PathDownload> getNativesOSX() {
             return Optional.ofNullable(nativesOSX);
         }
 
-        public Optional<Download.PathDownload> getNativesWindows() {
+        public Optional<DownloadableFile.PathDownload> getNativesWindows() {
             return Optional.ofNullable(nativesWindows);
         }
 
-        public Optional<Download.PathDownload> getSources() {
+        public Optional<DownloadableFile.PathDownload> getSources() {
             return Optional.ofNullable(sources);
         }
 
@@ -189,16 +189,16 @@ public class Library {
     }
 
     public static class Downloads {
-        private final Download.PathDownload artifact;
+        private final DownloadableFile.PathDownload artifact;
         @Nullable
         private final Classifiers classifiers;
 
-        public Downloads(Download.PathDownload artifact, @Nullable Classifiers classifiers) {
+        public Downloads(DownloadableFile.PathDownload artifact, @Nullable Classifiers classifiers) {
             this.artifact = artifact;
             this.classifiers = classifiers;
         }
 
-        public Download.PathDownload getArtifact() {
+        public DownloadableFile.PathDownload getArtifact() {
             return artifact;
         }
 
