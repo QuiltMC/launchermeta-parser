@@ -63,9 +63,7 @@ public class VersionManifestTest {
 
     @Test
     public void assertNoMethodReturnsAreNull() throws IOException {
-        VersionManifest.fromJson(TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL))
-                .getVersions()
-                .parallelStream()
-                .forEach(TestUtil.checkNoMethodsReturnNull(VersionEntry.class));
+        TestUtil.checkNoMethodsReturnNull(VersionManifest.class)
+                .accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL)));
     }
 }
