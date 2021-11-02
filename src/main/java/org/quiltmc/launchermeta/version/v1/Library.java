@@ -24,15 +24,15 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
 
 public class Library {
-    private final Downloads downloads;
+    private final LibraryDownloads downloads;
     private final String name;
     @Nullable
     private final Natives natives;
     @Nullable
     private final Extract extract;
-    private List<Rule> rules = Collections.emptyList();
+    private final List<Rule> rules;
 
-    public Library(Downloads downloads, String name, @Nullable Natives natives, @Nullable Extract extract, List<Rule> rules) {
+    public Library(LibraryDownloads downloads, String name, @Nullable Natives natives, @Nullable Extract extract, List<Rule> rules) {
         this.downloads = downloads;
         this.name = name;
         this.natives = natives;
@@ -40,7 +40,7 @@ public class Library {
         this.rules = rules;
     }
 
-    public Downloads getDownloads() {
+    public LibraryDownloads getDownloads() {
         return downloads;
     }
 
@@ -57,7 +57,7 @@ public class Library {
     }
 
     public List<Rule> getRules() {
-        return rules;
+        return rules == null ? Collections.emptyList() : rules;
     }
 
     @Override
@@ -169,7 +169,7 @@ public class Library {
     }
 
     public static class Extract {
-        private List<String> exclude = Collections.emptyList();
+        private List<String> exclude;
 
         public Extract(List<String> exclude) {
             this.exclude = exclude;
@@ -188,18 +188,19 @@ public class Library {
         }
     }
 
-    public static class Downloads {
+    public static class LibraryDownloads {
+        @Nullable
         private final DownloadableFile.PathDownload artifact;
         @Nullable
         private final Classifiers classifiers;
 
-        public Downloads(DownloadableFile.PathDownload artifact, @Nullable Classifiers classifiers) {
+        public LibraryDownloads(@Nullable DownloadableFile.PathDownload artifact, @Nullable Classifiers classifiers) {
             this.artifact = artifact;
             this.classifiers = classifiers;
         }
 
-        public DownloadableFile.PathDownload getArtifact() {
-            return artifact;
+        public Optional<DownloadableFile.PathDownload> getArtifact() {
+            return Optional.ofNullable(artifact);
         }
 
         public Optional<Classifiers> getClassifiers() {
@@ -210,7 +211,7 @@ public class Library {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
-            Downloads downloads = (Downloads) o;
+            LibraryDownloads downloads = (LibraryDownloads) o;
             return Objects.equals(artifact, downloads.artifact) && Objects.equals(classifiers, downloads.classifiers);
         }
     }

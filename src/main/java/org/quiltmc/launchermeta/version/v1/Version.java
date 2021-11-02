@@ -15,6 +15,7 @@
  */
 package org.quiltmc.launchermeta.version.v1;
 
+import java.io.Reader;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -70,6 +71,10 @@ public class Version {
 
     public static Version fromString(String json) {
         return GSON.fromJson(json, Version.class);
+    }
+
+    public static Version fromReader(Reader reader) {
+        return GSON.fromJson(reader, Version.class);
     }
 
     public Optional<Arguments> getArguments() {

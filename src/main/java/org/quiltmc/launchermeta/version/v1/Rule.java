@@ -92,11 +92,11 @@ public class Rule {
     public static class Features {
         @SerializedName("is_demo_user")
         @Nullable
-        private Boolean isDemoUser = null;
+        private Boolean isDemoUser;
 
         @SerializedName("has_custom_resolution")
         @Nullable
-        private Boolean hasCustomResolution = null;
+        private Boolean hasCustomResolution;
 
         public Features(@Nullable Boolean isDemoUser, @Nullable Boolean hasCustomResolution) {
             this.isDemoUser = isDemoUser;

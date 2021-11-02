@@ -80,6 +80,8 @@ public class Arguments {
                     rules = context.deserialize(argument.get("rules"), new TypeToken<List<Rule>>() {
                     }.getType());
 
+                    rules = rules == null ? Collections.emptyList() : rules;
+
                     if (argument.get("value").isJsonArray()) {
                         value = context.deserialize(argument.get("value"), new TypeToken<List<String>>() {
                         }.getType());

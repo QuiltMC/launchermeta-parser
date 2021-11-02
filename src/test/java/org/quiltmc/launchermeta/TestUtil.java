@@ -62,6 +62,10 @@ public final class TestUtil {
                                 newGetters.put(result, TestUtil.getAllGetterMethodsThatAreNotFromObject(result.getClass()));
                             } else if (result instanceof Optional<?> o && o.isPresent() && o.get().getClass().getPackageName().startsWith("org.quiltmc")) {
                                 newGetters.put(o.get(), TestUtil.getAllGetterMethodsThatAreNotFromObject(o.get().getClass()));
+                            } else if (result instanceof List<?> l && !l.isEmpty()) {
+                                for (Object o : l) {
+                                    newGetters.put(o, TestUtil.getAllGetterMethodsThatAreNotFromObject(o.getClass()));
+                                }
                             }
                         } catch (IllegalAccessException | InvocationTargetException e) {
                             e.printStackTrace();

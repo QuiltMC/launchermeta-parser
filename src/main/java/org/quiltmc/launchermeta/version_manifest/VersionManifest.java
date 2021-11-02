@@ -15,6 +15,7 @@
  */
 package org.quiltmc.launchermeta.version_manifest;
 
+import java.io.Reader;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -22,7 +23,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
 public class VersionManifest {
-    private static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson();
 
     @SerializedName("latest")
     private final LatestVersions latestVersions;
@@ -40,6 +41,10 @@ public class VersionManifest {
 
     public static VersionManifest fromString(String json) {
         return GSON.fromJson(json, VersionManifest.class);
+    }
+
+    public static VersionManifest fromReader(Reader reader) {
+        return GSON.fromJson(reader, VersionManifest.class);
     }
 
     public LatestVersions getLatestVersions() {
