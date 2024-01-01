@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class VersionManifestTest {
     public static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+    public static final String MANIFEST_URL_V2 = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
 
     private static final String TEST_JSON = """
             {
@@ -42,10 +43,36 @@ public class VersionManifestTest {
                 }]
             }
             """;
+    private static final String TEST_JSON_V2 = """
+            {
+                "latest": {
+                    "release": "1.17.1",
+                    "snapshot": "21w42a"
+                },
+                "versions": [{
+                    "id": "21w42a",
+                    "type": "snapshot",
+                    "url": "https://piston-meta.mojang.com/v1/packages/3ce8fdf60e69bfb0944e479ada4cf6b60dcc3995/21w42a.json",
+                    "time": "2021-10-20T12:46:24+00:00",
+                    "releaseTime": "2021-10-20T12:41:25+00:00",
+                    "sha1": "3ce8fdf60e69bfb0944e479ada4cf6b60dcc3995",
+                    "complianceLevel": 1
+                }]
+            }
+            """;
 
     @Test
     public void testParseFullJson() throws IOException {
         JsonElement json = TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL);
+        VersionManifest manifest = VersionManifest.fromJson(json);
+
+        assertEquals(manifest.getVersions().size(), json.getAsJsonObject().get("versions").getAsJsonArray().size(), "Size of version array matches json");
+        assertEquals(manifest.getLatestVersions().getRelease(), json.getAsJsonObject().get("latest").getAsJsonObject().get("release").getAsString(), "Size of version array matches json");
+    }
+
+    @Test
+    public void testParseFullJsonV2() throws IOException {
+        JsonElement json = TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL_V2);
         VersionManifest manifest = VersionManifest.fromJson(json);
 
         assertEquals(manifest.getVersions().size(), json.getAsJsonObject().get("versions").getAsJsonArray().size(), "Size of version array matches json");
@@ -62,8 +89,23 @@ public class VersionManifestTest {
     }
 
     @Test
+    public void testParseTestJsonV2() {
+        VersionManifest actual = VersionManifest.fromString(TEST_JSON_V2);
+        VersionManifest expected = new VersionManifest(new LatestVersions("1.17.1", "21w42a"),
+                List.of(new VersionEntry("21w42a", "snapshot", "https://piston-meta.mojang.com/v1/packages/3ce8fdf60e69bfb0944e479ada4cf6b60dcc3995/21w42a.json", "2021-10-20T12:46:24+00:00", "2021-10-20T12:41:25+00:00", "3ce8fdf60e69bfb0944e479ada4cf6b60dcc3995", 1)));
+
+        assertEquals(actual, expected, "Actual parse matches expected result");
+    }
+
+    @Test
     public void assertNoMethodReturnsAreNull() throws IOException {
         TestUtil.checkNoMethodsReturnNull(VersionManifest.class)
                 .accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL)));
+    }
+
+    @Test
+    public void assertNoMethodReturnsAreNullV2() throws IOException {
+        TestUtil.checkNoMethodsReturnNull(VersionManifest.class)
+                .accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL_V2)));
     }
 }
