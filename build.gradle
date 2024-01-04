@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'jvm-test-suite'
     id 'maven-publish'
     id "com.diffplug.spotless" version "5.8.2"
 }
@@ -12,33 +13,45 @@ repositories {
 }
 
 dependencies {
-    api "com.google.code.gson:gson:2.8.8"
+    api "com.google.code.gson:gson:2.8.9"
     api 'org.jetbrains:annotations:20.1.0'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
-jar {
-    from ('.') {
-        include 'LICENSE'
+java {
+    withSourcesJar()
+
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
-tasks.withType(JavaCompile.class) {
-    it.targetCompatibility = 16
-    it.sourceCompatibility = 16
+tasks {
+    compileJava {
+        javaCompiler = javaToolchains.compilerFor {
+            languageVersion = JavaLanguageVersion.of(8)
+        }
+    }
+    jar {
+        from ('.') {
+            include 'LICENSE'
+        }
+    }
 }
 
-tasks.getByName("compileJava") {
-    it.targetCompatibility = 8
-    it.sourceCompatibility = 8
-}
+testing {
+    //noinspection GroovyAssignabilityCheck
+    suites {
+        test {
+            useJUnitJupiter()
 
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
+            targets.all {
+                testTask.configure {
+                    testLogging {
+                        events "passed", "skipped", "failed"
+                    }
+                }
+            }
+        }
     }
 }
 
