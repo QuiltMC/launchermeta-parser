@@ -17,17 +17,22 @@ package org.quiltmc.launchermeta.version_manifest;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import org.quiltmc.launchermeta.TestUtil;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VersionManifestTest {
-    public static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
-    public static final String MANIFEST_URL_V2 = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
+    private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+    private static final String MANIFEST_URL_V2 = "https://piston-meta.mojang.com/mc/game/version_manifest_v2.json";
 
     private static final String TEST_JSON = """
             {
@@ -61,67 +66,49 @@ public class VersionManifestTest {
                 }]
             }
             """;
+    private static final VersionManifest VERSION_MANIFEST = new VersionManifest(new LatestVersions("1.17.1", "21w42a"), List.of(new VersionEntry("21w42a", "snapshot", "https://launchermeta.mojang.com/v1/packages/f2affa3247f2471d3334b199d1915ce582914464/21w42a.json", "2021-10-20T12:46:24+00:00", "2021-10-20T12:41:25+00:00")));
+    public static final VersionManifest VERSION_MANIFEST_V2 = new VersionManifest(new LatestVersions("1.17.1", "21w42a"), List.of(new VersionEntry("21w42a", "snapshot", "https://piston-meta.mojang.com/v1/packages/3ce8fdf60e69bfb0944e479ada4cf6b60dcc3995/21w42a.json", "2021-10-20T12:46:24+00:00", "2021-10-20T12:41:25+00:00", "3ce8fdf60e69bfb0944e479ada4cf6b60dcc3995", 1)));
 
-    @Test
-    public void testParseFullJson() throws IOException {
-        checkRemoteMatches(MANIFEST_URL, null);
-    }
-
-    @Test
-    public void testParseFullJsonV2() throws IOException {
-        checkRemoteMatches(MANIFEST_URL_V2, (json, manifest) -> {
-            String latestVersion = manifest.getLatestVersions().getRelease();
-            VersionEntry latestEntry = manifest.getVersions().stream()
-                    .filter(entry -> entry.getId().equals(latestVersion))
-                    .findFirst()
-                    .orElseThrow();
-            assertNotNull(latestEntry.getSha1(), "Latest version has a sha1");
-            assertNotEquals(latestEntry.getComplianceLevel(), 0, "Latest version has a compliance level");
-        });
-    }
-
-    @Test
-    @Deprecated
-    public void testParseTestJson() {
-        VersionManifest actual = VersionManifest.fromString(TEST_JSON);
-        VersionManifest expected = new VersionManifest(new LatestVersions("1.17.1", "21w42a"),
-                List.of(new VersionEntry("21w42a", "snapshot", "https://launchermeta.mojang.com/v1/packages/f2affa3247f2471d3334b199d1915ce582914464/21w42a.json", "2021-10-20T12:46:24+00:00", "2021-10-20T12:41:25+00:00")));
-
-        assertEquals(actual, expected, "Actual parse matches expected result");
-    }
-
-    @Test
-    public void testParseTestJsonV2() {
-        VersionManifest actual = VersionManifest.fromString(TEST_JSON_V2);
-        VersionManifest expected = new VersionManifest(new LatestVersions("1.17.1", "21w42a"),
-                List.of(new VersionEntry("21w42a", "snapshot", "https://piston-meta.mojang.com/v1/packages/3ce8fdf60e69bfb0944e479ada4cf6b60dcc3995/21w42a.json", "2021-10-20T12:46:24+00:00", "2021-10-20T12:41:25+00:00", "3ce8fdf60e69bfb0944e479ada4cf6b60dcc3995", 1)));
-
-        assertEquals(actual, expected, "Actual parse matches expected result");
-    }
-
-    @Test
-    public void assertNoMethodReturnsAreNull() throws IOException {
-        checkRemoteNoNulls(MANIFEST_URL);
-    }
-
-    @Test
-    public void assertNoMethodReturnsAreNullV2() throws IOException {
-        checkRemoteNoNulls(MANIFEST_URL_V2);
-    }
-
-    private void checkRemoteMatches(String url, BiConsumer<JsonElement, VersionManifest> additional) throws IOException {
+    @ParameterizedTest
+    @ValueSource(strings = {MANIFEST_URL, MANIFEST_URL_V2})
+    void testParseFullJson(String url) throws IOException {
         JsonElement json = TestUtil.getJsonFromURL(url);
         VersionManifest manifest = VersionManifest.fromJson(json);
 
         assertEquals(manifest.getVersions().size(), json.getAsJsonObject().get("versions").getAsJsonArray().size(), "Size of version array matches json");
         assertEquals(manifest.getLatestVersions().getRelease(), json.getAsJsonObject().get("latest").getAsJsonObject().get("release").getAsString(), "Size of version array matches json");
-        if (additional != null) {
-            additional.accept(json, manifest);
-        }
     }
 
-    private void checkRemoteNoNulls(String url) throws IOException {
-        TestUtil.checkNoMethodsReturnNull(VersionManifest.class)
-                .accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(url)));
+    @Test
+    void testParseFullJsonV2HasShaAnCompliance() throws IOException {
+        JsonElement json = TestUtil.getJsonFromURL(MANIFEST_URL_V2);
+        VersionManifest manifest = VersionManifest.fromJson(json);
+        String latestVersion = manifest.getLatestVersions().getRelease();
+        VersionEntry latestEntry = manifest.getVersions().stream()
+                .filter(entry -> entry.getId().equals(latestVersion))
+                .findFirst()
+                .orElseThrow();
+        assertNotNull(latestEntry.getSha1(), "Latest version has a sha1");
+        assertNotEquals(latestEntry.getComplianceLevel(), 0, "Latest version has a compliance level");
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideManifest")
+    void testParseTestJson(String json, VersionManifest manifest) {
+        VersionManifest actual = VersionManifest.fromString(json);
+        assertEquals(actual, manifest, "Actual parse matches expected result");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {MANIFEST_URL, MANIFEST_URL_V2})
+    void checkRemoteNoNulls(String url) throws IOException {
+        TestUtil.checkNoMethodsReturnNull(VersionManifest.class).accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(url)));
+    }
+
+    private static Stream<Arguments> provideManifest() {
+        return Stream.of(
+                Arguments.of(TEST_JSON, VERSION_MANIFEST),
+                Arguments.of(TEST_JSON_V2, VERSION_MANIFEST_V2)
+        );
     }
 }

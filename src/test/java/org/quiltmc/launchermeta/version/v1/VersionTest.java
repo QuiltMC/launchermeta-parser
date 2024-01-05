@@ -21,12 +21,12 @@ import com.google.gson.JsonElement;
 import org.junit.jupiter.api.Test;
 import org.quiltmc.launchermeta.TestUtil;
 import org.quiltmc.launchermeta.version_manifest.VersionManifest;
-import org.quiltmc.launchermeta.version_manifest.VersionManifestTest;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class VersionTest {
     private static final String VERSION_URL = "https://launchermeta.mojang.com/v1/packages/f2affa3247f2471d3334b199d1915ce582914464/21w42a.json";
+    private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
 
     @Test
     public void testParseFullJson() throws IOException {
@@ -38,7 +38,7 @@ public class VersionTest {
 
     @Test
     public void assertNoMethodReturnsAreNull() throws IOException {
-        VersionManifest.fromJson(TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL))
+        VersionManifest.fromJson(TestUtil.getJsonFromURL(MANIFEST_URL))
                 .getVersions()
                 .parallelStream()
                 .map(version -> {
