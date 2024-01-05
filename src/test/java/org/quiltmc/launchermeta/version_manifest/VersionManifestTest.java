@@ -17,12 +17,13 @@ package org.quiltmc.launchermeta.version_manifest;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import com.google.gson.JsonElement;
 import org.junit.jupiter.api.Test;
 import org.quiltmc.launchermeta.TestUtil;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class VersionManifestTest {
     public static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
@@ -63,23 +64,24 @@ public class VersionManifestTest {
 
     @Test
     public void testParseFullJson() throws IOException {
-        JsonElement json = TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL);
-        VersionManifest manifest = VersionManifest.fromJson(json);
-
-        assertEquals(manifest.getVersions().size(), json.getAsJsonObject().get("versions").getAsJsonArray().size(), "Size of version array matches json");
-        assertEquals(manifest.getLatestVersions().getRelease(), json.getAsJsonObject().get("latest").getAsJsonObject().get("release").getAsString(), "Size of version array matches json");
+        checkRemoteMatches(MANIFEST_URL, null);
     }
 
     @Test
     public void testParseFullJsonV2() throws IOException {
-        JsonElement json = TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL_V2);
-        VersionManifest manifest = VersionManifest.fromJson(json);
-
-        assertEquals(manifest.getVersions().size(), json.getAsJsonObject().get("versions").getAsJsonArray().size(), "Size of version array matches json");
-        assertEquals(manifest.getLatestVersions().getRelease(), json.getAsJsonObject().get("latest").getAsJsonObject().get("release").getAsString(), "Size of version array matches json");
+        checkRemoteMatches(MANIFEST_URL_V2, (json, manifest) -> {
+            String latestVersion = manifest.getLatestVersions().getRelease();
+            VersionEntry latestEntry = manifest.getVersions().stream()
+                    .filter(entry -> entry.getId().equals(latestVersion))
+                    .findFirst()
+                    .orElseThrow();
+            assertNotNull(latestEntry.getSha1(), "Latest version has a sha1");
+            assertNotEquals(latestEntry.getComplianceLevel(), 0, "Latest version has a compliance level");
+        });
     }
 
     @Test
+    @Deprecated
     public void testParseTestJson() {
         VersionManifest actual = VersionManifest.fromString(TEST_JSON);
         VersionManifest expected = new VersionManifest(new LatestVersions("1.17.1", "21w42a"),
@@ -99,13 +101,27 @@ public class VersionManifestTest {
 
     @Test
     public void assertNoMethodReturnsAreNull() throws IOException {
-        TestUtil.checkNoMethodsReturnNull(VersionManifest.class)
-                .accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL)));
+        checkRemoteNoNulls(MANIFEST_URL);
     }
 
     @Test
     public void assertNoMethodReturnsAreNullV2() throws IOException {
+        checkRemoteNoNulls(MANIFEST_URL_V2);
+    }
+
+    private void checkRemoteMatches(String url, BiConsumer<JsonElement, VersionManifest> additional) throws IOException {
+        JsonElement json = TestUtil.getJsonFromURL(url);
+        VersionManifest manifest = VersionManifest.fromJson(json);
+
+        assertEquals(manifest.getVersions().size(), json.getAsJsonObject().get("versions").getAsJsonArray().size(), "Size of version array matches json");
+        assertEquals(manifest.getLatestVersions().getRelease(), json.getAsJsonObject().get("latest").getAsJsonObject().get("release").getAsString(), "Size of version array matches json");
+        if (additional != null) {
+            additional.accept(json, manifest);
+        }
+    }
+
+    private void checkRemoteNoNulls(String url) throws IOException {
         TestUtil.checkNoMethodsReturnNull(VersionManifest.class)
-                .accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL_V2)));
+                .accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(url)));
     }
 }

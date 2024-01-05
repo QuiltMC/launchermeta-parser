@@ -27,6 +27,7 @@ public class VersionEntry {
     private final String sha1;
     private final int complianceLevel;
 
+    @Deprecated
     public VersionEntry(String id, String type, String url, String time, String releaseTime) {
         this(id, type, url, time, releaseTime, null, 0);
     }
