@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'org.quiltmc'
-version '1.0.0'
+version '1.1.0'
 
 repositories {
     mavenCentral()
@@ -15,10 +15,6 @@ repositories {
 dependencies {
     api "com.google.code.gson:gson:2.8.9"
     api 'org.jetbrains:annotations:20.1.0'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
 
 java {
