@@ -18,27 +18,36 @@ package org.quiltmc.launchermeta.version.v1;
 import java.io.IOException;
 
 import com.google.gson.JsonElement;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.quiltmc.launchermeta.TestUtil;
 import org.quiltmc.launchermeta.version_manifest.VersionManifest;
-import org.quiltmc.launchermeta.version_manifest.VersionManifestTest;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class VersionTest {
-    private static final String VERSION_URL = "https://launchermeta.mojang.com/v1/packages/f2affa3247f2471d3334b199d1915ce582914464/21w42a.json";
+    private static final String VERSION_URL = "https://piston-meta.mojang.com/v1/packages/3ecc58bbbc2b680be6742747089cbbf3272526f9/1.20.6-rc1.json";
+    private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest_v2.json";
 
     @Test
-    public void testParseFullJson() throws IOException {
+    public void testParseDoesNotThrow() throws IOException {
         JsonElement json = TestUtil.getJsonFromURL(VERSION_URL);
         assertDoesNotThrow(() -> {
             Version version = Version.fromJson(json);
         });
     }
 
+    @Disabled("Manual verification passes with 1.20.6-rc1, but the order of elements is different")
+    @Test
+    public void testParseFullJson() throws IOException {
+        JsonElement json = TestUtil.getJsonFromURL(VERSION_URL);
+        Assertions.assertEquals(json, Version.GSON.toJsonTree(Version.fromJson(json)));
+    }
+
     @Test
     public void assertNoMethodReturnsAreNull() throws IOException {
-        VersionManifest.fromJson(TestUtil.getJsonFromURL(VersionManifestTest.MANIFEST_URL))
+        VersionManifest.fromJson(TestUtil.getJsonFromURL(MANIFEST_URL))
                 .getVersions()
                 .parallelStream()
                 .map(version -> {
@@ -51,5 +60,22 @@ public class VersionTest {
                     return Version.fromJson(json);
                 })
                 .forEach(TestUtil.checkNoMethodsReturnNull(Version.class));
+    }
+
+    @Disabled("Manual verification passes with 1.20.6-rc1, but the order of elements is different")
+    @Test
+    public void assertCreatesSameJson() throws IOException {
+        VersionManifest.fromJson(TestUtil.getJsonFromURL(MANIFEST_URL))
+                .getVersions()
+                .parallelStream()
+                .forEach(version -> {
+                    JsonElement json = null;
+                    try {
+                        json = TestUtil.getJsonFromURL(version.getUrl());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Assertions.assertEquals(Version.GSON.toJsonTree(Version.fromJson(json)), json);
+                });
     }
 }

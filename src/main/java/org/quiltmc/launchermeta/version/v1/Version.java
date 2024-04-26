@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 public class Version {
     public static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Arguments.Argument.class, new Arguments.Argument.Parser())
+            .registerTypeAdapter(Arguments.Argument.class, new Arguments.Argument.Serializer())
             .create();
 
     @Nullable

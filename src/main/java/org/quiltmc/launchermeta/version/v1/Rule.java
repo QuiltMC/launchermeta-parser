@@ -98,9 +98,29 @@ public class Rule {
         @Nullable
         private Boolean hasCustomResolution;
 
-        public Features(@Nullable Boolean isDemoUser, @Nullable Boolean hasCustomResolution) {
+        @SerializedName("has_quick_plays_support")
+        @Nullable
+        private Boolean hasQuickPlaysSupport;
+
+        @SerializedName("is_quick_play_singleplayer")
+        @Nullable
+        private Boolean isQuickPlaySinglePlayer;
+
+        @SerializedName("is_quick_play_multiplayer")
+        @Nullable
+        private Boolean isQuickPlayMultiPlayer;
+
+        @SerializedName("is_quick_play_realms")
+        @Nullable
+        private Boolean isQuickPlayRealms;
+
+        public Features(@Nullable Boolean isDemoUser, @Nullable Boolean hasCustomResolution, @Nullable Boolean hasQuickPlaysSupport, @Nullable Boolean isQuickPlaySinglePlayer, @Nullable Boolean isQuickPlayMultiPlayer, @Nullable Boolean isQuickPlayRealms) {
             this.isDemoUser = isDemoUser;
             this.hasCustomResolution = hasCustomResolution;
+            this.hasQuickPlaysSupport = hasQuickPlaysSupport;
+            this.isQuickPlaySinglePlayer = isQuickPlaySinglePlayer;
+            this.isQuickPlayMultiPlayer = isQuickPlayMultiPlayer;
+            this.isQuickPlayRealms = isQuickPlayRealms;
         }
 
         public Optional<Boolean> getDemoUser() {
@@ -109,6 +129,22 @@ public class Rule {
 
         public Optional<Boolean> getHasCustomResolution() {
             return Optional.ofNullable(hasCustomResolution);
+        }
+
+        public Optional<Boolean> getHasQuickPlaysSupport() {
+            return Optional.ofNullable(hasQuickPlaysSupport);
+        }
+
+        public Optional<Boolean> getIsQuickPlaySinglePlayer() {
+            return Optional.ofNullable(isQuickPlaySinglePlayer);
+        }
+
+        public Optional<Boolean> getIsQuickPlayMultiPlayer() {
+            return Optional.ofNullable(isQuickPlayMultiPlayer);
+        }
+
+        public Optional<Boolean> getIsQuickPlayRealms() {
+            return Optional.ofNullable(isQuickPlayRealms);
         }
 
         @Override
