@@ -20,11 +20,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 public class Arguments {
@@ -93,6 +97,33 @@ public class Arguments {
                 }
 
                 return new Argument(value, rules);
+            }
+        }
+
+        public static class Serializer implements JsonSerializer<Argument> {
+            @Override
+            public JsonElement serialize(Argument argument, Type type, JsonSerializationContext context) {
+                if (argument.value.size() == 1 && argument.rules.isEmpty()) {
+                    return new JsonPrimitive(argument.value.get(0));
+                }
+
+                JsonObject json = new JsonObject();
+
+                if (argument.value.size() == 1) {
+                    json.add("value", new JsonPrimitive(argument.value.get(0)));
+                } else {
+                    JsonArray array = new JsonArray(argument.value.size());
+                    argument.value.forEach(array::add);
+                    json.add("value", array);
+                }
+
+                if (!argument.rules.isEmpty()) {
+                    JsonArray array = new JsonArray(argument.rules.size());
+                    argument.rules.stream().map(rule -> context.serialize(rule, new TypeToken<Rule>(){}.getType())).forEach(array::add);
+                    json.add("rules", array);
+                }
+
+                return json;
             }
         }
     }
