@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import com.google.gson.JsonElement;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -103,6 +104,18 @@ public class VersionManifestTest {
     @ValueSource(strings = {MANIFEST_URL, MANIFEST_URL_V2})
     void checkRemoteNoNulls(String url) throws IOException {
         TestUtil.checkNoMethodsReturnNull(VersionManifest.class).accept(VersionManifest.fromJson(TestUtil.getJsonFromURL(url)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {MANIFEST_URL, MANIFEST_URL_V2})
+    void checkMatches(String url) throws IOException {
+        JsonElement json = TestUtil.getJsonFromURL(url);
+        VersionManifest manifest = VersionManifest.fromJson(json);
+        JsonElement parsedJson = TestUtil.GSON.toJsonTree(manifest);
+
+        if (!TestUtil.compareJsonElements(json, parsedJson)) {
+            Assertions.assertEquals(TestUtil.GSON.toJson(json), TestUtil.GSON.toJson(manifest), String.format("Failed to match version manifest for url: %s", url));
+        }
     }
 
     private static Stream<Arguments> provideManifest() {

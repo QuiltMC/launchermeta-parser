@@ -22,8 +22,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * A representation of the version manifest for Minecraft.
+ */
 public class VersionManifest {
-    public static final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
 
     @SerializedName("latest")
     private final LatestVersions latestVersions;
@@ -35,22 +38,45 @@ public class VersionManifest {
         this.versions = versions;
     }
 
+    /**
+     *
+     * @param json the json element
+     * @return a parsed {@link VersionManifest}
+     */
     public static VersionManifest fromJson(JsonElement json) {
         return GSON.fromJson(json, VersionManifest.class);
     }
 
+    /**
+     *
+     * @param json the json string
+     * @return a parsed {@link VersionManifest}
+     */
     public static VersionManifest fromString(String json) {
         return GSON.fromJson(json, VersionManifest.class);
     }
 
+    /**
+     *
+     * @param reader the json reader
+     * @return a parsed {@link VersionManifest}
+     */
     public static VersionManifest fromReader(Reader reader) {
         return GSON.fromJson(reader, VersionManifest.class);
     }
 
+    /**
+     *
+     * @return the latest versions for the game
+     */
     public LatestVersions getLatestVersions() {
         return latestVersions;
     }
 
+    /**
+     *
+     * @return the versions of the game
+     */
     public List<VersionEntry> getVersions() {
         return versions;
     }

@@ -17,6 +17,9 @@ package org.quiltmc.launchermeta.version.v1;
 
 import java.util.Objects;
 
+/**
+ * Information about the logging for the version
+ */
 public class Logging {
     private final LoggingInstance client;
 
@@ -24,6 +27,10 @@ public class Logging {
         this.client = client;
     }
 
+    /**
+     *
+     * @return the logging instance for the client
+     */
     public LoggingInstance getClient() {
         return client;
     }
@@ -36,6 +43,9 @@ public class Logging {
         return Objects.equals(client, logging.client);
     }
 
+    /**
+     * Logging information for an environment.
+     */
     public static class LoggingInstance {
         private final String argument;
         private final String type;
@@ -47,14 +57,26 @@ public class Logging {
             this.file = file;
         }
 
+        /**
+         *
+         * @return the launch argument for the log file
+         */
         public String getArgument() {
             return argument;
         }
 
+        /**
+         *
+         * @return the log type
+         */
         public String getType() {
             return type;
         }
 
+        /**
+         *
+         * @return the download for the log configuration file
+         */
         public DownloadableFile.IdDownload getFile() {
             return file;
         }

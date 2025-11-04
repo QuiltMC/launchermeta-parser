@@ -20,6 +20,9 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Information about the Java runtime for the game.
+ */
 public class JavaVersion {
     @Nullable
     private final String component;
@@ -30,10 +33,18 @@ public class JavaVersion {
         this.majorVersion = majorVersion;
     }
 
+    /**
+     *
+     * @return the java runtime component for the version
+     */
     public Optional<String> getComponent() {
         return Optional.ofNullable(component);
     }
 
+    /**
+     *
+     * @return the java major version
+     */
     public int getMajorVersion() {
         return majorVersion;
     }

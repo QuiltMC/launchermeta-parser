@@ -17,6 +17,9 @@ package org.quiltmc.launchermeta.version.v1;
 
 import java.util.Objects;
 
+/**
+ * Some downloadable file for the game
+ */
 public class DownloadableFile {
     private final String sha1;
     private final int size;
@@ -28,14 +31,26 @@ public class DownloadableFile {
         this.url = url;
     }
 
+    /**
+     *
+     * @return the SHA1 of the file
+     */
     public String getSha1() {
         return sha1;
     }
 
+    /**
+     *
+     * @return the size of the file
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     *
+     * @return the url of the file
+     */
     public String getUrl() {
         return url;
     }
@@ -48,6 +63,9 @@ public class DownloadableFile {
         return size == download.size && Objects.equals(sha1, download.sha1) && Objects.equals(url, download.url);
     }
 
+    /**
+     * A file that is downloaded to a specific path.
+     */
     public static class PathDownload extends DownloadableFile {
         private final String path;
 
@@ -56,6 +74,10 @@ public class DownloadableFile {
             this.path = path;
         }
 
+        /**
+         *
+         * @return the path to download the file to
+         */
         public String getPath() {
             return path;
         }
@@ -70,6 +92,9 @@ public class DownloadableFile {
         }
     }
 
+    /**
+     * A download file with a specific id.
+     */
     public static class IdDownload extends DownloadableFile {
         private final String id;
 
@@ -78,6 +103,10 @@ public class DownloadableFile {
             this.id = id;
         }
 
+        /**
+         *
+         * @return the id for this download
+         */
         public String getId() {
             return id;
         }

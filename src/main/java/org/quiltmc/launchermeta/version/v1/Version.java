@@ -25,17 +25,22 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Information about the game version.
+ */
 public class Version {
-    public static final Gson GSON = new GsonBuilder()
-            .registerTypeAdapter(Arguments.Argument.class, new Arguments.Argument.Parser())
-            .registerTypeAdapter(Arguments.Argument.class, new Arguments.Argument.Serializer())
+    private static final Gson GSON = newGsonBuilder()
             .create();
 
     @Nullable
     private final Arguments arguments;
+
+    @Nullable
+    private final String minecraftArguments;
     private final AssetIndex assetIndex;
     private final String assets;
-    private final int complianceLevel;
+    @Nullable
+    private final Integer complianceLevel;
     private final Downloads downloads;
     private final String id;
     @Nullable
@@ -49,8 +54,9 @@ public class Version {
     private final String time;
     private final String type;
 
-    public Version(@Nullable Arguments arguments, AssetIndex assetIndex, String assets, int complianceLevel, Downloads downloads, String id, @Nullable JavaVersion javaVersion, List<Library> libraries, @Nullable Logging logging, String mainClass, int minimumLauncherVersion, String releaseTime, String time, String type) {
+    public Version(@Nullable Arguments arguments, @Nullable String minecraftArguments, AssetIndex assetIndex, String assets, int complianceLevel, Downloads downloads, String id, @Nullable JavaVersion javaVersion, List<Library> libraries, @Nullable Logging logging, String mainClass, int minimumLauncherVersion, String releaseTime, String time, String type) {
         this.arguments = arguments;
+        this.minecraftArguments = minecraftArguments;
         this.assetIndex = assetIndex;
         this.assets = assets;
         this.complianceLevel = complianceLevel;
@@ -66,70 +72,160 @@ public class Version {
         this.type = type;
     }
 
+    /**
+     *
+     * @param json the json element
+     * @return a parsed {@link Version}
+     */
     public static Version fromJson(JsonElement json) {
         return GSON.fromJson(json, Version.class);
     }
 
+    /**
+     *
+     * @param json the json string
+     * @return a parsed {@link Version}
+     */
     public static Version fromString(String json) {
         return GSON.fromJson(json, Version.class);
     }
 
+    /**
+     *
+     * @param reader a reader for the json
+     * @return a parsed {@link Version}
+     */
     public static Version fromReader(Reader reader) {
         return GSON.fromJson(reader, Version.class);
     }
 
+    /**
+     *
+     * @return a {@link GsonBuilder} with custom parserss
+     */
+    public static GsonBuilder newGsonBuilder() {
+        return new GsonBuilder()
+                .registerTypeAdapter(Arguments.Argument.class, new Arguments.Argument.Parser())
+                .registerTypeAdapter(Arguments.Argument.class, new Arguments.Argument.Serializer());
+    }
+
+    /**
+     *
+     * @return the arguments for the game, if present
+     */
     public Optional<Arguments> getArguments() {
         return Optional.ofNullable(arguments);
     }
 
+    /**
+     *
+     * @return the arguments for the game, if present
+     */
+    public Optional<String> getMinecraftArguments() {
+        return Optional.ofNullable(minecraftArguments);
+    }
+
+    /**
+     *
+     * @return the asset index for the game
+     */
     public AssetIndex getAssetIndex() {
         return assetIndex;
     }
 
+    /**
+     *
+     * @return the assets version
+     */
     public String getAssets() {
         return assets;
     }
 
-    public int getComplianceLevel() {
-        return complianceLevel;
+    /**
+     *
+     * @return the compliance level of the game, if present
+     */
+    public Optional<Integer> getComplianceLevel() {
+        return Optional.ofNullable(complianceLevel);
     }
 
+    /**
+     *
+     * @return the files to download for the game
+     */
     public Downloads getDownloads() {
         return downloads;
     }
 
+    /**
+     *
+     * @return the id of the game
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     *
+     * @return the java version for the game
+     */
     public Optional<JavaVersion> getJavaVersion() {
         return Optional.ofNullable(javaVersion);
     }
 
+    /**
+     *
+     * @return the libraries needed for the game
+     */
     public List<Library> getLibraries() {
         return libraries;
     }
 
+    /**
+     *
+     * @return the logging information for the game, if present
+     */
     public Optional<Logging> getLogging() {
         return Optional.ofNullable(logging);
     }
 
+    /**
+     *
+     * @return the main class for the game
+     */
     public String getMainClass() {
         return mainClass;
     }
 
+    /**
+     * Can be used as a form of a version for the version information.
+     * ie support for version 1 but getting version 2 could indicate a breaking change.
+     * @return the minimum launcher version supported.
+     */
     public int getMinimumLauncherVersion() {
         return minimumLauncherVersion;
     }
 
+    /**
+     *
+     * @return an ISO-8601 timestamp for the release time
+     */
     public String getReleaseTime() {
         return releaseTime;
     }
 
+    /**
+     *
+     * @return an ISO-8601 timestamp for the release time
+     */
     public String getTime() {
         return time;
     }
 
+    /**
+     *
+     * @return the type of the game version
+     */
     public String getType() {
         return type;
     }
@@ -139,6 +235,6 @@ public class Version {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Version version = (Version) o;
-        return complianceLevel == version.complianceLevel && minimumLauncherVersion == version.minimumLauncherVersion && Objects.equals(arguments, version.arguments) && Objects.equals(assetIndex, version.assetIndex) && Objects.equals(assets, version.assets) && Objects.equals(downloads, version.downloads) && Objects.equals(id, version.id) && Objects.equals(javaVersion, version.javaVersion) && Objects.equals(libraries, version.libraries) && Objects.equals(logging, version.logging) && Objects.equals(mainClass, version.mainClass) && Objects.equals(releaseTime, version.releaseTime) && Objects.equals(time, version.time) && Objects.equals(type, version.type);
+        return Objects.equals(complianceLevel, version.complianceLevel) && minimumLauncherVersion == version.minimumLauncherVersion && Objects.equals(arguments, version.arguments) && Objects.equals(minecraftArguments, version.minecraftArguments) && Objects.equals(assetIndex, version.assetIndex) && Objects.equals(assets, version.assets) && Objects.equals(downloads, version.downloads) && Objects.equals(id, version.id) && Objects.equals(javaVersion, version.javaVersion) && Objects.equals(libraries, version.libraries) && Objects.equals(logging, version.logging) && Objects.equals(mainClass, version.mainClass) && Objects.equals(releaseTime, version.releaseTime) && Objects.equals(time, version.time) && Objects.equals(type, version.type);
     }
 }

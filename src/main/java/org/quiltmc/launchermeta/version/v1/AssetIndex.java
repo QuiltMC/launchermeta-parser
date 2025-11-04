@@ -15,6 +15,9 @@
  */
 package org.quiltmc.launchermeta.version.v1;
 
+/**
+ * An {@link org.quiltmc.launchermeta.version.v1.DownloadableFile.IdDownload} that also includes the size of the all the assets in the index.
+ */
 public class AssetIndex extends DownloadableFile.IdDownload {
     private final int totalSize;
 
@@ -23,6 +26,10 @@ public class AssetIndex extends DownloadableFile.IdDownload {
         this.totalSize = totalSize;
     }
 
+    /**
+     *
+     * @return the total size of the files within the index
+     */
     public int getTotalSize() {
         return totalSize;
     }

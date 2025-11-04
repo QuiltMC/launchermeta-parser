@@ -21,6 +21,9 @@ import java.util.Optional;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Different specific downloads for this game version.
+ */
 public class Downloads {
     private final DownloadableFile client;
     @SerializedName("client_mappings")
@@ -31,35 +34,64 @@ public class Downloads {
     @SerializedName("server_mappings")
     @Nullable
     private final DownloadableFile serverMappings;
+    @SerializedName("windows_server")
+    @Nullable
+    private final DownloadableFile windowsServer;
 
-    public Downloads(DownloadableFile client, @Nullable DownloadableFile clientMappings, @Nullable DownloadableFile server, @Nullable DownloadableFile serverMappings) {
+    public Downloads(DownloadableFile client, @Nullable DownloadableFile clientMappings, @Nullable DownloadableFile server, @Nullable DownloadableFile serverMappings, @Nullable DownloadableFile windowsServer) {
         this.client = client;
         this.clientMappings = clientMappings;
         this.server = server;
         this.serverMappings = serverMappings;
+        this.windowsServer = windowsServer;
     }
 
+    /**
+     *
+     * @return the file for the client jar
+     */
     public DownloadableFile getClient() {
         return client;
     }
 
+    /**
+     *
+     * @return the file for the client mappings, if present
+     */
     public Optional<DownloadableFile> getClientMappings() {
         return Optional.ofNullable(clientMappings);
     }
 
+    /**
+     *
+     * @return the file for the server jar, if present
+     */
     public Optional<DownloadableFile> getServer() {
         return Optional.ofNullable(server);
     }
 
+    /**
+     *
+     * @return the file for the server mappings, if present
+     */
     public Optional<DownloadableFile> getServerMappings() {
         return Optional.ofNullable(serverMappings);
     }
+
+    /**
+     *
+     * @return the file for the windows server exe, if present
+     */
+    public Optional<DownloadableFile> getWindowsServer() {
+        return Optional.ofNullable(windowsServer);
+    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Downloads downloads = (Downloads) o;
-        return Objects.equals(client, downloads.client) && Objects.equals(clientMappings, downloads.clientMappings) && Objects.equals(server, downloads.server) && Objects.equals(serverMappings, downloads.serverMappings);
+        return Objects.equals(client, downloads.client) && Objects.equals(clientMappings, downloads.clientMappings) && Objects.equals(server, downloads.server) && Objects.equals(serverMappings, downloads.serverMappings) && Objects.equals(windowsServer, downloads.windowsServer);
     }
 }

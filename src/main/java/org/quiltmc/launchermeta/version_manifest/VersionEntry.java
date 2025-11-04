@@ -18,21 +18,29 @@ package org.quiltmc.launchermeta.version_manifest;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * Information about a version in the manifest.
+ */
 public class VersionEntry {
     private final String id;
     private final String type;
     private final String url;
     private final String time;
     private final String releaseTime;
+    @Nullable
     private final String sha1;
-    private final int complianceLevel;
+
+    @Nullable
+    private final Integer complianceLevel;
 
     @Deprecated
     public VersionEntry(String id, String type, String url, String time, String releaseTime) {
-        this(id, type, url, time, releaseTime, null, 0);
+        this(id, type, url, time, releaseTime, null, null);
     }
 
-    public VersionEntry(String id, String type, String url, String time, String releaseTime, String sha1, int complianceLevel) {
+    public VersionEntry(String id, String type, String url, String time, String releaseTime, @Nullable String sha1, @Nullable Integer complianceLevel) {
         this.id = id;
         this.type = type;
         this.url = url;
@@ -42,32 +50,60 @@ public class VersionEntry {
         this.complianceLevel = complianceLevel;
     }
 
+    /**
+     *
+     * @return the id of the version
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     *
+     * @return the type of the version
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     *
+     * @return the version json file
+     */
     public String getUrl() {
         return url;
     }
 
+    /**
+     *
+     * @return an ISO-8601 timestamp for the release of the version
+     */
     public String getTime() {
         return time;
     }
 
+    /**
+     *
+     * @return an ISO-8601 timestamp for the release of the version
+     */
     public String getReleaseTime() {
         return releaseTime;
     }
 
+    /**
+     *
+     * @return the SHA-1 for the version json, if present
+     */
     public Optional<String> getSha1() {
         return Optional.ofNullable(sha1);
     }
 
-    public int getComplianceLevel() {
-        return complianceLevel;
+    /**
+     *
+     * @return the compliance level of the version json, if present
+     */
+    public Optional<Integer> getComplianceLevel() {
+        return Optional.ofNullable(complianceLevel);
     }
 
     @Override
@@ -75,6 +111,6 @@ public class VersionEntry {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         VersionEntry versionEntry = (VersionEntry) o;
-        return id.equals(versionEntry.id) && type.equals(versionEntry.type) && url.equals(versionEntry.url) && time.equals(versionEntry.time) && releaseTime.equals(versionEntry.releaseTime) && Objects.equals(sha1, versionEntry.sha1) && complianceLevel == versionEntry.complianceLevel;
+        return id.equals(versionEntry.id) && type.equals(versionEntry.type) && url.equals(versionEntry.url) && time.equals(versionEntry.time) && releaseTime.equals(versionEntry.releaseTime) && Objects.equals(sha1, versionEntry.sha1) && Objects.equals(complianceLevel, versionEntry.complianceLevel);
     }
 }

@@ -21,18 +21,25 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import org.quiltmc.launchermeta.version.v1.Version;
+
 public final class TestUtil {
+    public static Gson GSON = Version.newGsonBuilder().create();
+
     public static <T> List<Method> getAllGetterMethodsThatAreNotFromObject(Class<T> clazz) {
         Method[] methods = clazz.getMethods();
 
@@ -75,5 +82,59 @@ public final class TestUtil {
                 getters = newGetters;
             }
         };
+    }
+
+    // This is a very rough and coarse compare, definitely not optimal at all
+    public static boolean compareJsonElements(JsonElement a, JsonElement b) {
+        if (a.isJsonObject() && b.isJsonObject()) {
+            Set<String> aKeys = a.getAsJsonObject().keySet();
+            Set<String> bKeys = b.getAsJsonObject().keySet();
+
+            if (aKeys.containsAll(bKeys) && bKeys.containsAll(aKeys)) {
+                for (Map.Entry<String, JsonElement> element : a.getAsJsonObject().entrySet()) {
+                    if (!compareJsonElements(element.getValue(), b.getAsJsonObject().get(element.getKey()))) {
+                        return false;
+                    }
+                }
+            } else {
+                Set<String> aExtra = new HashSet<>(aKeys);
+                Set<String> bExtra = new HashSet<>(bKeys);
+
+                aExtra.removeAll(bKeys);
+                bExtra.removeAll(aKeys);
+
+                System.err.printf("Mismatch between json element keys! %s <=> %s%n", aExtra, bExtra);
+                return false;
+            }
+
+        } else if (a.isJsonArray() && b.isJsonArray()) {
+            if (a.getAsJsonArray().size() != b.getAsJsonArray().size()) {
+                System.err.println("Array lengths do not match");
+                return false;
+            }
+            for (int i = 0; i < a.getAsJsonArray().size(); i++) {
+                if (!compareJsonElements(a.getAsJsonArray().get(i), b.getAsJsonArray().get(i))) {
+                    return false;
+                }
+            }
+        } else if (a.isJsonPrimitive() && b.isJsonPrimitive()) {
+            if (!a.getAsJsonPrimitive().equals(b.getAsJsonPrimitive())) {
+                System.err.printf("Primitive mismatch: %s <=> %s%n", a, b);
+                return false;
+            }
+        } else if (a.isJsonNull() && b.isJsonNull()) {
+            return true;
+        } else if (a.isJsonArray() && b.isJsonPrimitive()) {
+            if (a.getAsJsonArray().size() == 1) {
+                return a.getAsJsonArray().get(0).equals(b);
+            }
+        } else if (b.isJsonArray() && a.isJsonPrimitive()) {
+            if (b.getAsJsonArray().size() == 1) {
+                return b.getAsJsonArray().get(0).equals(a);
+            }
+        } else  {
+            System.out.println("Failed to compare json elements " + a + " and " + b);
+        }
+        return true;
     }
 }

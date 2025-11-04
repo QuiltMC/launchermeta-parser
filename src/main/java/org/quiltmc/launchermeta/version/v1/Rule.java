@@ -21,6 +21,9 @@ import java.util.Optional;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * A rule for different optional features
+ */
 public class Rule {
     private final String action;
     @Nullable
@@ -34,14 +37,26 @@ public class Rule {
         this.features = features;
     }
 
+    /**
+     *
+     * @return the action for the rule
+     */
     public String getAction() {
         return action;
     }
 
+    /**
+     *
+     * @return the os for the rule
+     */
     public Optional<OS> getOs() {
         return Optional.ofNullable(os);
     }
 
+    /**
+     *
+     * @return the features of the rule
+     */
     public Optional<Features> getFeatures() {
         return Optional.ofNullable(features);
     }
@@ -54,6 +69,9 @@ public class Rule {
         return Objects.equals(action, rule.action) && Objects.equals(os, rule.os) && Objects.equals(features, rule.features);
     }
 
+    /**
+     * Rules for specific OS
+     */
     public static class OS {
         @Nullable
         private final String name;
@@ -68,14 +86,26 @@ public class Rule {
             this.arch = arch;
         }
 
+        /**
+         *
+         * @return the name of the os, if present
+         */
         public Optional<String> getName() {
             return Optional.ofNullable(name);
         }
 
+        /**
+         *
+         * @return a regex to check against {@code System.getProperty("os.version")}
+         */
         public Optional<String> getVersion() {
             return Optional.ofNullable(version);
         }
 
+        /**
+         *
+         * @return the architecture for the os
+         */
         public Optional<String> getArch() {
             return Optional.ofNullable(arch);
         }
@@ -89,6 +119,9 @@ public class Rule {
         }
     }
 
+    /**
+     * A list of different features for launching the game.
+     */
     public static class Features {
         @SerializedName("is_demo_user")
         @Nullable
@@ -123,26 +156,50 @@ public class Rule {
             this.isQuickPlayRealms = isQuickPlayRealms;
         }
 
+        /**
+         *
+         * @return is the user in demo mode, if present
+         */
         public Optional<Boolean> getDemoUser() {
             return Optional.ofNullable(isDemoUser);
         }
 
+        /**
+         *
+         * @return should the game launch with a custom resolution, if present
+         */
         public Optional<Boolean> getHasCustomResolution() {
             return Optional.ofNullable(hasCustomResolution);
         }
 
+        /**
+         *
+         * @return should the game launch into quick play, if present
+         */
         public Optional<Boolean> getHasQuickPlaysSupport() {
             return Optional.ofNullable(hasQuickPlaysSupport);
         }
 
+        /**
+         *
+         * @return should the game quick launch into single player, if present
+         */
         public Optional<Boolean> getIsQuickPlaySinglePlayer() {
             return Optional.ofNullable(isQuickPlaySinglePlayer);
         }
 
+        /**
+         *
+         * @return should the game quick launch into multiplayer, if present
+         */
         public Optional<Boolean> getIsQuickPlayMultiPlayer() {
             return Optional.ofNullable(isQuickPlayMultiPlayer);
         }
 
+        /**
+         *
+         * @return should the game quick launch into realms, if present.
+         */
         public Optional<Boolean> getIsQuickPlayRealms() {
             return Optional.ofNullable(isQuickPlayRealms);
         }

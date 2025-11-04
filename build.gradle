@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'org.quiltmc'
-version '1.1.0'
+version '1.2.0'
 
 repositories {
     mavenCentral()
@@ -19,6 +19,7 @@ dependencies {
 
 java {
     withSourcesJar()
+    withJavadocJar()
 
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)

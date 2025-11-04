@@ -31,6 +31,9 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * Arguments for launching the game and JVM.
+ */
 public class Arguments {
     private final List<Argument> game;
     private final List<Argument> jvm;
@@ -40,10 +43,18 @@ public class Arguments {
         this.jvm = jvm;
     }
 
+    /**
+     *
+     * @return a list of arguments to launch the game
+     */
     public List<Argument> getGame() {
         return game;
     }
 
+    /**
+     *
+     * @return a list of arguments to supply to the JVM
+     */
     public List<Argument> getJvm() {
         return jvm;
     }
@@ -56,6 +67,9 @@ public class Arguments {
         return Objects.equals(game, arguments.game) && Objects.equals(jvm, arguments.jvm);
     }
 
+    /**
+     * A specific argument for launching.
+     */
     public static class Argument {
         private final List<String> value;
         private final List<Rule> rules;
@@ -65,15 +79,23 @@ public class Arguments {
             this.rules = rules;
         }
 
+        /**
+         * The string values are sometimes in the form of {@code "${val}"}, which can be interpolated.
+         * @return a list of strings for the argument
+         */
         public List<String> getValue() {
             return value;
         }
 
+        /**
+         *
+         * @return a list of rules for when the argument should be applied
+         */
         public List<Rule> getRules() {
             return rules;
         }
 
-        public static class Parser implements JsonDeserializer<Argument> {
+        static class Parser implements JsonDeserializer<Argument> {
             @Override
             public Argument deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
                 List<String> value;
@@ -100,7 +122,7 @@ public class Arguments {
             }
         }
 
-        public static class Serializer implements JsonSerializer<Argument> {
+        static class Serializer implements JsonSerializer<Argument> {
             @Override
             public JsonElement serialize(Argument argument, Type type, JsonSerializationContext context) {
                 if (argument.value.size() == 1 && argument.rules.isEmpty()) {

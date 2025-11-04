@@ -15,6 +15,9 @@
  */
 package org.quiltmc.launchermeta.version_manifest;
 
+/**
+ * The latest versions for the game.
+ */
 public class LatestVersions {
     private final String release;
     private final String snapshot;
@@ -24,10 +27,18 @@ public class LatestVersions {
         this.snapshot = snapshot;
     }
 
+    /**
+     *
+     * @return the latest release version of the game
+     */
     public String getRelease() {
         return release;
     }
 
+    /**
+     *
+     * @return the latest snapshot version of the game
+     */
     public String getSnapshot() {
         return snapshot;
     }
